@@ -18,12 +18,12 @@
 (scroll-bar-mode -1)
 (setq-default cursor-type 'bar)
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
-(set-frame-parameter nil 'alpha-background 85)
+(set-frame-parameter nil 'alpha-background 80)
 
 ;; Fonts
-(set-face-attribute 'default nil :font "FiraCode Nerd Font Mono" :height 110)
-(set-face-attribute 'fixed-pitch nil :family "FiraCode Nerd Font Mono")
-(set-face-attribute 'variable-pitch nil :family "FiraCode Nerd Font Mono" :height 110)
+(set-face-attribute 'default nil :font "Hack Nerd Font Mono" :height 110)
+(set-face-attribute 'fixed-pitch nil :family "Hack Nerd Font Mono")
+(set-face-attribute 'variable-pitch nil :family "Hack Nerd Font Mono" :height 110)
 
 ;; Nerd Icons
 (require 'nerd-icons)
@@ -35,10 +35,9 @@
 (doom-modeline-mode 1)
 
 ;; Load theme
-(use-package solo-jazz-theme)
-(use-package weyland-yutani-theme)
-(use-package doom-themes
-  :init (load-theme 'doom-one))
+(use-package doom-themes)
+(use-package fleetish-theme
+   :init (load-theme 'fleetish))
 
 ;; Dashboard
 (use-package dashboard
@@ -73,8 +72,7 @@
   (add-hook 'haskell-mode-hook 'eglot-ensure)
   :custom
   (eglot-autoshutdown t)
-  (eglot-confirm-server-initiated-edits nil)
-  )
+  (eglot-confirm-server-initiated-edits nil))
 
 (define-key eglot-mode-map (kbd "C-c <tab>") #'company-complete)
 (define-key eglot-mode-map (kbd "C-c e f n") #'flymake-goto-next-error)
@@ -95,6 +93,9 @@
 ;; Lisp config
 (setq inferior-lisp-program "/usr/bin/sbcl")
 (setq-default indent-tabs-mode nil)
+
+;; C, C++ config
+(setq-default c-basic-offset 4)
 
 ;; Open config file
 (defun open-config-file ()
