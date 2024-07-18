@@ -43,7 +43,7 @@ apps are not started from a shell."
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 
-;; Line numbers, cursor
+;; Line numbers, Cursor
 (add-hook 'prog-mode-hook #'display-line-numbers-mode)
 (setq-default cursor-type 'bar)
 
