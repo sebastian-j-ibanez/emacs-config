@@ -76,7 +76,7 @@ apps are not started from a shell."
   (dashboard-setup-startup-hook)
   :custom
   ;; Logo and center content
-  (dashboard-startup-banner 2)
+  (dashboard-startup-banner 'official)
   (dashboard-center-content t)
 
   ;; Use nerd icons
