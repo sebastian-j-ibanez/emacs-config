@@ -52,7 +52,7 @@ apps are not started from a shell."
 
 ;; Fonts
 (set-face-attribute 'default nil :font "Hack Nerd Font Mono" :height 100)
-(set-face-attribute 'fixed-pitch nil :family "Hack Nerd Font Mono")
+(set-face-attribute 'fixed-pitch nil :family "Hack Nerd Font Mono" :height 100)
 (set-face-attribute 'variable-pitch nil :family "Hack Nerd Font Mono" :height 100)
 
 ;; Nerd Icons
@@ -62,13 +62,12 @@ apps are not started from a shell."
 
 ;; Mode line
 (use-package doom-modeline)
-(doom-modeline-mode 1)
+(doom-modeline-mode 2)
+;(setq doom-modeline-height 10)     
 
 ;; Load theme
-(use-package fleetish-theme)
 (use-package kaolin-themes)
-(use-package doom-themes)
-(load-theme 'leuven)
+(load-theme 'kaolin-bubblegum)
 
 ;; Dashboard
 (use-package dashboard
@@ -76,7 +75,7 @@ apps are not started from a shell."
   (dashboard-setup-startup-hook)
   :custom
   ;; Logo and center content
-  (dashboard-startup-banner 'official)
+  (dashboard-startup-banner 2)
   (dashboard-center-content t)
 
   ;; Use nerd icons
@@ -116,6 +115,7 @@ apps are not started from a shell."
   :config
   (add-hook 'c++-mode-hook 'eglot-ensure)
   (add-hook 'haskell-mode-hook 'eglot-ensure)
+  (add-hook 'go-mode-hook 'eglot-ensure)
   :config
   (setq-default eglot-workspace-configuration
                 '((haskell
@@ -142,6 +142,8 @@ apps are not started from a shell."
 ;; Backward/forward paragraph key binding
 (global-set-key (kbd "M-p") 'backward-paragraph)
 (global-set-key (kbd "M-n") 'forward-paragraph)
+(global-set-key (kbd "M-[") 'scroll-up-command)
+(global-set-key (kbd "M-]") 'scroll-down-command)
 
 ;; Open config file macro
 (defun open-config-file ()
@@ -171,3 +173,6 @@ apps are not started from a shell."
     (eval-buffer)))
 
 (add-hook 'after-save-hook 'init-eval)
+
+;; Swap buffers
+(global-set-key (kbd "C-x p") 'window-swap-states)
