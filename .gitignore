@@ -1,0 +1,24 @@
+# Emacs backup and autosave files
+*~
+\#*\#
+.\#*
+
+# Emacs lockfiles
+*.lock
+
+# ELPA packages
+elpa/
+
+# auto-save-list files
+auto-save-list/
+
+# byte-compiled files
+**/*.elc
+**/*.eln
+
+# Bookmarks, recent files, history
+bookmarks
+recentf
+projectile-bookmarks.eld
+projectile-cache
+.history
