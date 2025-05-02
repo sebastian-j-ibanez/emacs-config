@@ -8,6 +8,7 @@
 
 # ELPA packages
 elpa/
+transient/
 
 # auto-save-list files
 auto-save-list/
