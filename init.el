@@ -3,10 +3,13 @@
 ;; ----------------
 
 (custom-set-variables
- '(custom-enabled-themes t)
  '(custom-safe-themes t)
- '(eglot-confirm-server-edits nil nil nil "Customized with use-package eglot")
- '(inhibit-startup-screen t))
+ '(inhibit-startup-screen t)
+ '(package-selected-packages
+   '(catppuccin-theme company dashboard doom-modeline
+					  exec-path-from-shell go-mode haskell-mode
+					  ligature magit nerd-icons-completion
+					  nerd-icons-dired python-mode rust-mode sly)))
 (custom-set-faces
  '(default ((t (:background nil)))))
 
@@ -16,6 +19,8 @@
 
 
 ;; Set package repos
+
+
 (setq package-archives
       '(("MELPA" . "https://melpa.org/packages/")
 	("ELPA" . "https://elpa.gnu.org/packages/")))
@@ -87,11 +92,10 @@
 (doom-modeline-mode 2)
 (setq doom-modeline-icon t)
 
-;; Load theme
-(use-package doom-themes)
+;; Install themes
 (use-package catppuccin-theme)
 (setq catppuccin-flavor 'macchiato)
-(load-theme 'catppuccin)
+(load-theme 'catppuccin t)
 
 ;; Dashboard
 (use-package dashboard
@@ -99,8 +103,8 @@
   (dashboard-setup-startup-hook)
   :custom
   ;; Logo and center content
-  ;; (dashboard-startup-banner (expand-file-name "~/.config/emacs/custom-logo.txt"))
-  (dashboard-startup-banner 'logo)
+  (dashboard-startup-banner (expand-file-name "logo-2.txt" user-emacs-directory))
+  ;; (dashboard-startup-banner 'official)
   (dashboard-center-content t)
 
   ;; Use nerd icons
@@ -187,15 +191,20 @@
 (setq-default tab-width 4)
 
 ;; Language modes
-(use-package go-mode)
-(use-package rust-mode)
+(use-package go-mode
+  :custom
+  (add-hook 'before-save-hook #'gofmt-before-save))
+
+(use-package python-mode
+  :custom
+  (python-shell-interpreter "python3"))
+
+(use-package rust-mode
+  :custom
+  (setq rust-format-on-save t))
+
 (use-package haskell-mode)
 
-;; Go config
-(add-hook 'before-save-hook #'gofmt-before-save)
-
-;; Rust config
-(setq rust-format-on-save t)
 
 ;; Lisp config
 (use-package sly)
@@ -214,6 +223,7 @@
   (add-hook 'haskell-mode-hook 'eglot-ensure)
   (add-hook 'go-mode-hook 'eglot-ensure)
   (add-hook 'rust-mode-hook 'eglot-ensure)
+  (add-hook 'python-mode-hook 'eglot-ensure)
   :custom
   (eglot-autoshutdown t)
   (eglot-confirm-server-initiated-edits nil))
@@ -221,16 +231,15 @@
 (define-key eglot-mode-map (kbd "C-c <tab>") #'company-complete)
 (define-key eglot-mode-map (kbd "C-c e f n") #'flymake-goto-next-error)
 (define-key eglot-mode-map (kbd "C-c e f p") #'flymake-goto-prev-error)
-(define-key eglot-mode-map (kbd "C-c e r") #'eglot-rename);; Nerd icons in completion window
+(define-key eglot-mode-map (kbd "C-c e r") #'eglot-rename)
+
+;; Nerd icons in completion window
 (use-package nerd-icons-completion
   :config
 (nerd-icons-completion-mode))
 
-;; Backups
-(setq make-backup-files t)
-(setq backup-directory-alist '(("." . "~/.emacs.d/backups/")))
-
 ;; Dired mode
 (setq dired-listing-switches "-aBhl --group-directories-first")
 
-
+;; Magit
+(use-package magit)
