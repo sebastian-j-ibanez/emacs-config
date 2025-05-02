@@ -8,6 +8,7 @@
 
 # ELPA packages
 elpa/
+eln-cache/
 transient/
 
 # auto-save-list files
@@ -23,3 +24,4 @@ recentf
 projectile-bookmarks.eld
 projectile-cache
 .history
+projects
