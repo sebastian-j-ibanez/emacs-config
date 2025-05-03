@@ -17,10 +17,7 @@
 ;; PACKAGE MANAGEMENT
 ;; ----------------
 
-
 ;; Set package repos
-
-
 (setq package-archives
       '(("MELPA" . "https://melpa.org/packages/")
 	("ELPA" . "https://elpa.gnu.org/packages/")))
@@ -38,9 +35,12 @@
 ;; ------------
 
 (use-package exec-path-from-shell
-  :ensure t
+  :if (memq system-type '(gnu/linux))
   :config
   (exec-path-from-shell-initialize))
+
+(when (eq system-type 'windows-nt)
+  (setq-default default-directory (getenv "USERPROFILE")))
 
 ;; ------------
 ;; UI/THEMING
@@ -83,14 +83,19 @@
 (global-ligature-mode 't)
 
 ;; Nerd Icons
-(use-package nerd-icons)
-(use-package nerd-icons-dired)
-(add-hook 'dired-mode-hook #'nerd-icons-dired-mode)
+(use-package nerd-icons
+    :custom
+    (nerd-icons-font-family "FiraCode Nerd Font Mono"))
+
+(use-package nerd-icons-dired
+    :custom
+    (add-hook 'dired-mode-hook #'nerd-icons-dired-mode))
 
 ;; Mode line
 (use-package doom-modeline)
-(doom-modeline-mode 2)
-(setq doom-modeline-icon t)
+    :custom
+    (doom-modeline-mode 2)
+    (setq doom-modeline-icon t))
 
 ;; Install themes
 (use-package catppuccin-theme)
