@@ -3,14 +3,24 @@
 ;; ----------------
 
 (custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(custom-safe-themes t)
+ '(eglot-confirm-server-edits nil nil nil "Customized with use-package eglot")
  '(inhibit-startup-screen t)
  '(package-selected-packages
    '(catppuccin-theme company dashboard doom-modeline
 					  exec-path-from-shell go-mode haskell-mode
-					  ligature magit nerd-icons-completion
-					  nerd-icons-dired python-mode rust-mode sly)))
+					  kaolin-themes ligature magit
+					  nerd-icons-completion nerd-icons-dired
+					  plant-theme python-mode rust-mode sly vue-mode)))
 (custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(default ((t (:background nil)))))
 
 ;; ----------------
@@ -100,7 +110,8 @@
 ;; Install themes
 (use-package catppuccin-theme)
 (setq catppuccin-flavor 'macchiato)
-(load-theme 'catppuccin t)
+(use-package kaolin-themes)
+(load-theme 'kaolin-mono-dark t)
 
 ;; Dashboard
 (use-package dashboard
@@ -210,6 +221,7 @@
 
 (use-package haskell-mode)
 
+(use-package vue-mode)
 
 ;; Lisp config
 (use-package sly)
@@ -229,6 +241,7 @@
   (add-hook 'go-mode-hook 'eglot-ensure)
   (add-hook 'rust-mode-hook 'eglot-ensure)
   (add-hook 'python-mode-hook 'eglot-ensure)
+  (add-hook 'vue-mode-hook 'eglot-ensure)
   :custom
   (eglot-autoshutdown t)
   (eglot-confirm-server-initiated-edits nil))
