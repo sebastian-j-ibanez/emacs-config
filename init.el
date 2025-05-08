@@ -59,7 +59,7 @@
 
 ;; Window
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
-(set-frame-parameter nil 'alpha-background 100)
+(set-frame-parameter nil 'alpha-background 85)
 
 ;; Bars
 (tool-bar-mode -1)
@@ -114,7 +114,7 @@
 (setq catppuccin-flavor 'macchiato)
 
 (use-package kaolin-themes)
-(load-theme 'kaolin-dark t)
+(load-theme 'kaolin-bubblegum t)
 
 ;; Dashboard
 (use-package dashboard
