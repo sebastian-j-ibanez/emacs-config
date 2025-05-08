@@ -59,7 +59,8 @@
 
 ;; Window
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
-(set-frame-parameter nil 'alpha-background 85)
+(when (memq system-type '(gnu/linux))
+  (set-frame-parameter nil 'alpha-background 85))
 
 ;; Bars
 (tool-bar-mode -1)
