@@ -13,9 +13,10 @@
  '(package-selected-packages
    '(catppuccin-theme company dashboard doom-modeline
 					  exec-path-from-shell go-mode haskell-mode
-					  kaolin-themes ligature magit
-					  nerd-icons-completion nerd-icons-dired
-					  plant-theme python-mode rust-mode sly vue-mode)))
+					  kaolin-themes ligature magit naysayer
+					  naysayer-theme nerd-icons-completion
+					  nerd-icons-dired plant-theme python-mode
+					  rust-mode sly vue-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -67,6 +68,7 @@
 
 ;; Line numbers, Cursor
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+(global-display-line-numbers-mode)
 (setq-default cursor-type 'bar)
 
 ;; Audible bell
@@ -102,7 +104,7 @@
     (add-hook 'dired-mode-hook #'nerd-icons-dired-mode))
 
 ;; Mode line
-(use-package doom-modeline)
+(use-package doom-modeline
     :custom
     (doom-modeline-mode 2)
     (setq doom-modeline-icon t))
@@ -110,8 +112,9 @@
 ;; Install themes
 (use-package catppuccin-theme)
 (setq catppuccin-flavor 'macchiato)
+
 (use-package kaolin-themes)
-(load-theme 'kaolin-mono-dark t)
+(load-theme 'kaolin-dark t)
 
 ;; Dashboard
 (use-package dashboard
@@ -170,7 +173,7 @@
 (defun open-config-file ()
   "Open Emacs configuration file."
   (interactive)
-  (find-file (expand-file-name "~/.config/emacs/init.el")))
+  (find-file user-init-file))
 
 (global-set-key (kbd "C-c c") 'open-config-file)
 
@@ -190,7 +193,7 @@
 ;; Eval init.el on save
 (defun init-eval ()
   "Evaluate the config file on save."
-  (when (string-equal buffer-file-name (expand-file-name "~/.config/emacs/init.el"))
+  (when (string-equal buffer-file-name user-init-file)
     (eval-buffer)))
 
 (add-hook 'after-save-hook 'init-eval)
