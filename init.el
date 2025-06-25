@@ -11,12 +11,10 @@
  '(eglot-confirm-server-edits nil nil nil "Customized with use-package eglot")
  '(inhibit-startup-screen t)
  '(package-selected-packages
-   '(catppuccin-theme company dashboard doom-modeline
-					  exec-path-from-shell go-mode haskell-mode
-					  kaolin-themes ligature magit naysayer
-					  naysayer-theme nerd-icons-completion
-					  nerd-icons-dired plant-theme python-mode
-					  rust-mode sly vue-mode)))
+   '(company dashboard doom-modeline exec-path-from-shell go-mode
+			 haskell-mode kaolin-themes ligature magit nano-modeline
+			 nerd-icons-completion nerd-icons-dired python-mode
+			 rust-mode sly vue-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -59,8 +57,12 @@
 
 ;; Window
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
-(when (memq system-type '(gnu/linux))
-  (set-frame-parameter nil 'alpha-background 85))
+
+(setq initial-frame-alist
+      (append (list '(font . "FiraCode Nerd Font Mono-10")
+                    '(fixed-pitch-font . "FiraCode Nerd Font Mono-10")
+                    '(fullscreen . maximized))
+              initial-frame-alist))
 
 ;; Bars
 (tool-bar-mode -1)
@@ -74,11 +76,6 @@
 
 ;; Audible bell
 (setq ring-bell-function 'ignore)
-
-;; Fonts
-(set-face-attribute 'default nil :font "FiraCode Nerd Font" :height 100)
-(set-face-attribute 'fixed-pitch nil :family "FiraCode Nerd Font" :height 100)
-(set-face-attribute 'variable-pitch nil :family "FiraCode Nerd Font" :height 100)
 
 ;; Font ligatures
 (use-package ligature)
@@ -97,8 +94,10 @@
 
 ;; Nerd Icons
 (use-package nerd-icons
-    :custom
-    (nerd-icons-font-family "FiraCode Nerd Font Mono"))
+  :config
+  (setq nerd-icons-font-family "FiraCode Nerd Font Mono")
+  :config
+  (add-hook 'after-init-hook #'nerd-icons-set-font))
 
 (use-package nerd-icons-dired
     :custom
@@ -111,11 +110,8 @@
     (setq doom-modeline-icon t))
 
 ;; Install themes
-(use-package catppuccin-theme)
-(setq catppuccin-flavor 'macchiato)
-
 (use-package kaolin-themes)
-(load-theme 'kaolin-bubblegum t)
+(load-theme 'kaolin-mono-dark t)
 
 ;; Dashboard
 (use-package dashboard
@@ -124,20 +120,17 @@
   :custom
   ;; Logo and center content
   (dashboard-startup-banner (expand-file-name "logo-2.txt" user-emacs-directory))
-  ;; (dashboard-startup-banner 'official)
   (dashboard-center-content t)
 
   ;; Use nerd icons
-  (dashboard-display-icons-p t)
-  (dashboard-icon-type 'nerd-icons)
-  (dashboard-set-heading-icons t)
-  (dashboard-set-file-icons t)
-
-  ;; Specify dashboard items
   (dashboard-items '((recents   . 5)
                      (bookmarks . 5)
                      (projects  . 5))))
 
+(setq dashboard-display-icons-p t)
+(setq dashboard-icon-type 'nerd-icons)
+(setq dashboard-set-heading-icons t)
+(setq dashboard-set-file-icons t)
 (global-set-key (kbd "C-c d") 'dashboard-open)
 
 ;; Compilation window settings
@@ -229,7 +222,13 @@
 
 ;; Lisp config
 (use-package sly)
-(setq inferior-lisp-program "/usr/bin/sbcl")
+
+(when (eq system-type 'windows-nt)
+  (setq inferior-lisp-program "\"c:/Program Files/Steel Bank Common Lisp/sbcl.exe\""))
+
+(when (eq system-type 'gnu/linux)
+  (setq inferior-lisp-program "/usr/bin/sbcl"))
+
 
 ;; Eglot and company config
 (use-package company)
@@ -258,7 +257,7 @@
 ;; Nerd icons in completion window
 (use-package nerd-icons-completion
   :config
-(nerd-icons-completion-mode))
+  (nerd-icons-completion-mode))
 
 ;; Dired mode
 (setq dired-listing-switches "-aBhl --group-directories-first")
