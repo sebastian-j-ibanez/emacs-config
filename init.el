@@ -99,9 +99,12 @@
   :config
   (add-hook 'after-init-hook #'nerd-icons-set-font))
 
+;; Dired mode
 (use-package nerd-icons-dired
     :custom
     (add-hook 'dired-mode-hook #'nerd-icons-dired-mode))
+
+(setq dired-listing-switches "-aBhl --group-directories-first")
 
 ;; Mode line
 (use-package doom-modeline
@@ -111,7 +114,7 @@
 
 ;; Install themes
 (use-package kaolin-themes)
-(load-theme 'kaolin-mono-dark t)
+(load-theme 'kaolin-dark t)
 
 ;; Dashboard
 (use-package dashboard
@@ -229,7 +232,6 @@
 (when (eq system-type 'gnu/linux)
   (setq inferior-lisp-program "/usr/bin/sbcl"))
 
-
 ;; Eglot and company config
 (use-package company)
 (global-company-mode)
@@ -259,8 +261,9 @@
   :config
   (nerd-icons-completion-mode))
 
-;; Dired mode
-(setq dired-listing-switches "-aBhl --group-directories-first")
+;; --------------------
+;; MISC PACKAGES
+;; --------------------
 
 ;; Magit
 (use-package magit)

@@ -25,3 +25,6 @@ projectile-bookmarks.eld
 projectile-cache
 .history
 projects
+
+# Font files
+*.ttf
