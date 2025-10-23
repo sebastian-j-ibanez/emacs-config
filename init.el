@@ -11,10 +11,10 @@
  '(eglot-confirm-server-edits nil nil nil "Customized with use-package eglot")
  '(inhibit-startup-screen t)
  '(package-selected-packages
-   '(company dashboard doom-modeline exec-path-from-shell go-mode
-			 haskell-mode kaolin-themes ligature magit nano-modeline
-			 nerd-icons-completion nerd-icons-dired python-mode
-			 rust-mode sly vue-mode)))
+   '(## company dashboard doom-modeline exec-path-from-shell gambit
+		gerbil-mode go-mode haskell-mode kaolin-themes koalin-themes
+		ligature magit nerd-icons-completion nerd-icons-dired
+		python-mode rust-mode sly vue-mode zenburn-theme)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -64,6 +64,11 @@
                     '(fullscreen . maximized))
               initial-frame-alist))
 
+;; Transparency
+(defun set-transparency (percent)
+  (set-frame-parameter nil 'alpha-background 85)               ; Current frame
+  (add-to-list 'default-frame-alist '(alpha-background . 85))) ; Future frames
+
 ;; Bars
 (tool-bar-mode -1)
 (menu-bar-mode -1)
@@ -112,9 +117,10 @@
     (doom-modeline-mode 2)
     (setq doom-modeline-icon t))
 
-;; Install themes
+;; Install theme 
 (use-package kaolin-themes)
-(load-theme 'kaolin-dark t)
+(use-package zenburn-theme)				
+(load-theme 'zenburn t)
 
 ;; Dashboard
 (use-package dashboard
@@ -231,6 +237,90 @@
 
 (when (eq system-type 'gnu/linux)
   (setq inferior-lisp-program "/usr/bin/sbcl"))
+
+;; Gerbil config
+;; (use-package gerbil-mode
+;;   :load-path "/opt/gerbil/share/emacs/site-lisp"
+;;   :mode (("\\.ss\\'"  . gerbil-mode)
+;;          ("\\.scm\\'" . gerbil-mode)
+;;          ("\\.ssx\\'" . gerbil-mode)
+;;          ("\\.sld\\'" . gerbil-mode)
+;;          ("\\.pkg\\'" . gerbil-mode)))
+
+;; (use-package gambit
+;;   :load-path "/opt/gerbil/share/emacs/site-lisp"
+;;   :hook (inferior-scheme-mode . gambit-inferior-mode))
+
+;; (defvar gerbil-program-name
+;;   (expand-file-name "/opt/gerbil/bin/gxi"))
+;; (setq scheme-program-name gerbil-program-name)
+
+(use-package gerbil-mode
+  :ensure nil
+  ;; Only load if Gerbil is installed
+  :when (executable-find "gxi")
+
+  :preface
+  ;; Ask gxi where Gerbil is installed
+  (defvar *gerbil-path*
+    (string-trim
+     (shell-command-to-string
+      "gxi -e '(display (path-expand \"~~\"))' -e '(flush-output-port)'")))
+
+  (defun gerbil-setup-buffers ()
+    "Switch current buffer to gerbil-mode and start a REPL."
+    (interactive)
+    (gerbil-mode)
+    (split-window-right)
+    (shrink-window-horizontally 2)
+    (let ((buf (buffer-name)))
+      (other-window 1)
+      (run-scheme "gxi")
+      (switch-to-buffer-other-window "*scheme*" nil)
+      (switch-to-buffer buf)))
+
+  (defun clear-comint-buffer ()
+    "Clear the REPL buffer."
+    (interactive)
+    (with-current-buffer "*scheme*"
+      (let ((comint-buffer-maximum-size 0))
+        (comint-truncate-buffer))))
+
+  :mode (("\\.ss\\'"  . gerbil-mode)
+         ("\\.pkg\\'" . gerbil-mode))
+
+  :bind (:map comint-mode-map
+              (("C-S-n" . comint-next-input)
+               ("C-S-p" . comint-previous-input)
+               ("C-S-l" . clear-comint-buffer))
+         :map gerbil-mode-map
+              (("C-S-l" . clear-comint-buffer)))
+
+  :init
+  ;; Autoload gerbil-mode from Gerbil’s install path
+  (autoload 'gerbil-mode
+    (expand-file-name "share/emacs/site-lisp/gerbil-mode.el" *gerbil-path*)
+    "Gerbil editing mode." t)
+
+  ;; Shortcut to start Gerbil REPL + buffer
+  (global-set-key (kbd "C-c C-g") 'gerbil-setup-buffers)
+
+  :hook
+  (inferior-scheme-mode . gambit-inferior-mode)
+
+  :config
+  ;; Load Gambit integration
+  (require 'gambit
+           (expand-file-name "share/emacs/site-lisp/gambit.el" *gerbil-path*))
+
+  ;; Tell Emacs to use gxi as the Scheme REPL
+  (setf scheme-program-name (expand-file-name "bin/gxi" *gerbil-path*))
+
+  ;; Optional: load TAGS if available
+  (let ((tags (locate-dominating-file default-directory "TAGS")))
+    (when tags (visit-tags-table tags)))
+  (let ((tags (expand-file-name "src/TAGS" *gerbil-path*)))
+    (when (file-exists-p tags) (visit-tags-table tags))))
 
 ;; Eglot and company config
 (use-package company)
