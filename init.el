@@ -227,34 +227,13 @@
 
 (use-package haskell-mode)
 
-(use-package vue-mode)
-
-;; Lisp config
-(use-package sly)
-
-(when (eq system-type 'windows-nt)
-  (setq inferior-lisp-program "\"c:/Program Files/Steel Bank Common Lisp/sbcl.exe\""))
-
-(when (eq system-type 'gnu/linux)
+;; Common Lisp config
+(use-package sly
+  :ensure t
+  :config
   (setq inferior-lisp-program "/usr/bin/sbcl"))
 
-;; Gerbil config
-;; (use-package gerbil-mode
-;;   :load-path "/opt/gerbil/share/emacs/site-lisp"
-;;   :mode (("\\.ss\\'"  . gerbil-mode)
-;;          ("\\.scm\\'" . gerbil-mode)
-;;          ("\\.ssx\\'" . gerbil-mode)
-;;          ("\\.sld\\'" . gerbil-mode)
-;;          ("\\.pkg\\'" . gerbil-mode)))
-
-;; (use-package gambit
-;;   :load-path "/opt/gerbil/share/emacs/site-lisp"
-;;   :hook (inferior-scheme-mode . gambit-inferior-mode))
-
-;; (defvar gerbil-program-name
-;;   (expand-file-name "/opt/gerbil/bin/gxi"))
-;; (setq scheme-program-name gerbil-program-name)
-
+;; Gerbil Scheme config
 (use-package gerbil-mode
   :ensure nil
   ;; Only load if Gerbil is installed
@@ -296,7 +275,7 @@
          :map gerbil-mode-map
               (("C-S-l" . clear-comint-buffer)))
 
-  :init
+  :init 
   ;; Autoload gerbil-mode from Gerbil’s install path
   (autoload 'gerbil-mode
     (expand-file-name "share/emacs/site-lisp/gerbil-mode.el" *gerbil-path*)
