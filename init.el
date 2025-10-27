@@ -8,13 +8,13 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes t)
- '(eglot-confirm-server-edits nil nil nil "Customized with use-package eglot")
  '(inhibit-startup-screen t)
  '(package-selected-packages
-   '(## company dashboard doom-modeline exec-path-from-shell gambit
-		gerbil-mode go-mode haskell-mode kaolin-themes koalin-themes
-		ligature magit nerd-icons-completion nerd-icons-dired
-		python-mode rust-mode sly vue-mode zenburn-theme)))
+   '(## company dashboard doom-modeline doom-themes exec-path-from-shell
+		gambit gerbil-mode go-mode haskell-mode kaolin-themes
+		koalin-themes ligature magit nerd-icons-completion
+		nerd-icons-dired python-mode racket-mode rust-mode sly
+		zenburn-theme zig-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -66,8 +66,9 @@
 
 ;; Transparency
 (defun set-transparency (percent)
-  (set-frame-parameter nil 'alpha-background 85)               ; Current frame
-  (add-to-list 'default-frame-alist '(alpha-background . 85))) ; Future frames
+  "Set window transparency to a percentage (0-100)"
+  (set-frame-parameter nil 'alpha-background percent)               ; Current frame
+  (add-to-list 'default-frame-alist '(alpha-background . percent))) ; Future frames
 
 ;; Bars
 (tool-bar-mode -1)
@@ -117,10 +118,9 @@
     (doom-modeline-mode 2)
     (setq doom-modeline-icon t))
 
-;; Install theme 
-(use-package kaolin-themes)
-(use-package zenburn-theme)				
-(load-theme 'zenburn t)
+;; Install theme
+(use-package doom-themes)
+(load-theme 'doom-one t)
 
 ;; Dashboard
 (use-package dashboard
@@ -170,7 +170,7 @@
 (global-set-key (kbd "M-[") 'move-buffer-down-one-line)
 
 ;; Compile
-(global-set-key (kbd "C-c C-x") 'compile)
+(global-set-key (kbd "C-c b") 'compile)
 
 ;; Open config file macro
 (defun open-config-file ()
@@ -217,89 +217,25 @@
   :custom
   (add-hook 'before-save-hook #'gofmt-before-save))
 
-(use-package python-mode
-  :custom
-  (python-shell-interpreter "python3"))
-
 (use-package rust-mode
   :custom
   (setq rust-format-on-save t))
 
+(use-package python-mode
+  :custom
+  (python-shell-interpreter "python3"))
+
 (use-package haskell-mode)
+
+(use-package racket-mode)
+
+(use-package zig-mode)
 
 ;; Common Lisp config
 (use-package sly
   :ensure t
   :config
   (setq inferior-lisp-program "/usr/bin/sbcl"))
-
-;; Gerbil Scheme config
-(use-package gerbil-mode
-  :ensure nil
-  ;; Only load if Gerbil is installed
-  :when (executable-find "gxi")
-
-  :preface
-  ;; Ask gxi where Gerbil is installed
-  (defvar *gerbil-path*
-    (string-trim
-     (shell-command-to-string
-      "gxi -e '(display (path-expand \"~~\"))' -e '(flush-output-port)'")))
-
-  (defun gerbil-setup-buffers ()
-    "Switch current buffer to gerbil-mode and start a REPL."
-    (interactive)
-    (gerbil-mode)
-    (split-window-right)
-    (shrink-window-horizontally 2)
-    (let ((buf (buffer-name)))
-      (other-window 1)
-      (run-scheme "gxi")
-      (switch-to-buffer-other-window "*scheme*" nil)
-      (switch-to-buffer buf)))
-
-  (defun clear-comint-buffer ()
-    "Clear the REPL buffer."
-    (interactive)
-    (with-current-buffer "*scheme*"
-      (let ((comint-buffer-maximum-size 0))
-        (comint-truncate-buffer))))
-
-  :mode (("\\.ss\\'"  . gerbil-mode)
-         ("\\.pkg\\'" . gerbil-mode))
-
-  :bind (:map comint-mode-map
-              (("C-S-n" . comint-next-input)
-               ("C-S-p" . comint-previous-input)
-               ("C-S-l" . clear-comint-buffer))
-         :map gerbil-mode-map
-              (("C-S-l" . clear-comint-buffer)))
-
-  :init 
-  ;; Autoload gerbil-mode from Gerbil’s install path
-  (autoload 'gerbil-mode
-    (expand-file-name "share/emacs/site-lisp/gerbil-mode.el" *gerbil-path*)
-    "Gerbil editing mode." t)
-
-  ;; Shortcut to start Gerbil REPL + buffer
-  (global-set-key (kbd "C-c C-g") 'gerbil-setup-buffers)
-
-  :hook
-  (inferior-scheme-mode . gambit-inferior-mode)
-
-  :config
-  ;; Load Gambit integration
-  (require 'gambit
-           (expand-file-name "share/emacs/site-lisp/gambit.el" *gerbil-path*))
-
-  ;; Tell Emacs to use gxi as the Scheme REPL
-  (setf scheme-program-name (expand-file-name "bin/gxi" *gerbil-path*))
-
-  ;; Optional: load TAGS if available
-  (let ((tags (locate-dominating-file default-directory "TAGS")))
-    (when tags (visit-tags-table tags)))
-  (let ((tags (expand-file-name "src/TAGS" *gerbil-path*)))
-    (when (file-exists-p tags) (visit-tags-table tags))))
 
 ;; Eglot and company config
 (use-package company)
@@ -311,11 +247,11 @@
   :ensure t
   :config
   (add-hook 'c++-mode-hook 'eglot-ensure)
-  (add-hook 'haskell-mode-hook 'eglot-ensure)
   (add-hook 'go-mode-hook 'eglot-ensure)
   (add-hook 'rust-mode-hook 'eglot-ensure)
   (add-hook 'python-mode-hook 'eglot-ensure)
-  (add-hook 'vue-mode-hook 'eglot-ensure)
+  (add-hook 'haskell-mode-hook 'eglot-ensure)
+  (add-hook 'zig-mode-hook 'eglot-ensure)
   :custom
   (eglot-autoshutdown t)
   (eglot-confirm-server-initiated-edits nil))
